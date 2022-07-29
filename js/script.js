@@ -20,16 +20,18 @@ function divide(var_one, var_two) {
 
 function operate(operator, var_one, var_two) {
     switch (operator) {
-        case '+':
+        case 'add':
             return add(var_one, var_two);
-        case '-':
+        case 'sybtract':
             return subtract(var_one, var_two);
-        case '*':
+        case 'multiply':
             return multiply(var_one, var_two);
-        case '/':
+        case 'divide':
             return divide(var_one, var_two);
         default:
             return "OOPS, something went wrong!";
             break;
     }
 }
+
+//function 
