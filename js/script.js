@@ -1,6 +1,6 @@
 const expressionArray = ['-', '+', '*', '/'];
 const isNum = /[0-9]/g;
-let displayValue = {
+let allValues = {
     numberOne : '',
     operator : '',
     numberTwo : ''
@@ -44,7 +44,7 @@ function updateDisplay(elem) {
         display.textContent = '';
     }
     else {
-        display.textContent += elem;
+        display.textContent = `${allValues.numberOne}${allValues.operator}${allValues.numberTwo}`;
     }
 }
 
@@ -53,15 +53,15 @@ function selectNumber(){
     numberButtons.forEach(numBtn => {
         numBtn.addEventListener('click', () => {
             if(numBtn.textContent.match(isNum)){
-                if(displayValue.operator == ''){
-                    if(displayValue['numberOne']==''){
+                if(allValues.operator == ''){
+                    if(allValues['numberOne']==''){
                         updateDisplay('Clear');
                     }
-                    displayValue['numberOne'] += numBtn.textContent;
+                    allValues['numberOne'] += numBtn.textContent;
                 }else{
-                    displayValue['numberTwo'] += numBtn.textContent;
+                    allValues['numberTwo'] += numBtn.textContent;
                 }
-                updateDisplay(numBtn.textContent);
+                updateDisplay();
             }
         })
     });
@@ -71,17 +71,14 @@ function selectOperator(){
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
-            if (expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']=='' && displayValue['numberOne']!='')  {
-                displayValue['operator'] = opBtn.textContent;
-                updateDisplay(opBtn.textContent);
-            }else if (expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']=='' && displayValue['numberOne']!='')  {
-                displayValue['operator'] = opBtn.textContent;
-                updateDisplay(opBtn.textContent);
+            if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo']=='' && allValues['numberOne']!='')  {
+                allValues['operator'] = opBtn.textContent;
+                updateDisplay();
             }
-            else if(expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']!='' && displayValue['numberOne']!=''){
+            else if(expressionArray.includes(opBtn.textContent) && allValues['numberTwo']!='' && allValues['numberOne']!=''){
                 calculate();
-                displayValue['operator'] = opBtn.textContent;
-                updateDisplay(opBtn.textContent);
+                allValues['operator'] = opBtn.textContent;
+                updateDisplay();
             }
             else if(opBtn.textContent == 'Clear'){
                 clearFormula();
@@ -91,27 +88,21 @@ function selectOperator(){
         })
     });
 }
-function updateOperator(newOper){
-    display.textContent[display.textContent.length-1] ='';
-    display.textContent+=newOper;
-}
 function calculate(){
     let answer = 0;
-    if(displayValue['numbeTwo'] == '' && displayValue['numberOne'] != ''){
-        answer = displayValue['numberOne'];
-    }else if(displayValue['numbeTwo'] != ''){
-        answer = operate(displayValue.operator,displayValue.numberOne,displayValue.numberTwo);
-    }else{
-        updateDisplay('Enter number...');
+    if(allValues['numbeTwo'] == '' && allValues['numberOne'] != ''){
+        answer = allValues['numberOne'];
+    }else if(allValues['numbeTwo'] != ''){
+        answer = operate(allValues.operator,allValues.numberOne,allValues.numberTwo);
     }
     clearFormula();
-    displayValue['numberOne'] +=answer;
-    updateDisplay(answer);
+    allValues['numberOne'] += answer.toFixed(3);
+    updateDisplay();
 }
 
 function clearFormula() {
     updateDisplay('Clear');
-    displayValue = {
+    allValues = {
         numberOne : '',
         operator : '',
         numberTwo : ''
