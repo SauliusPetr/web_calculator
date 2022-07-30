@@ -1,9 +1,9 @@
 const expressionArray = ['-', '+', '*', '/'];
 const isNum = /[0-9]/g;
 let allValues = {
-    numberOne : '',
-    operator : '',
-    numberTwo : ''
+    numberOne: '',
+    operator: '',
+    numberTwo: ''
 };
 
 function add(var_one, var_two) {
@@ -41,24 +41,24 @@ function operate(operator, var_one, var_two) {
 let display = document.querySelector('.display');
 function updateDisplay(elem) {
     if (elem == 'Clear') {
-        display.textContent = '';
+        display.textContent = '0';
     }
     else {
         display.textContent = `${allValues.numberOne}${allValues.operator}${allValues.numberTwo}`;
     }
 }
 
-function selectNumber(){
+function selectNumber() {
     let numberButtons = document.querySelectorAll('.number');
     numberButtons.forEach(numBtn => {
         numBtn.addEventListener('click', () => {
-            if(numBtn.textContent.match(isNum)){
-                if(allValues.operator == ''){
-                    if(allValues['numberOne']==''){
+            if (numBtn.textContent.match(isNum)) {
+                if (allValues.operator == '') {
+                    if (allValues['numberOne'] == '') {
                         updateDisplay('Clear');
                     }
                     allValues['numberOne'] += numBtn.textContent;
-                }else{
+                } else {
                     allValues['numberTwo'] += numBtn.textContent;
                 }
                 updateDisplay();
@@ -66,34 +66,39 @@ function selectNumber(){
         })
     });
 }
-  
-function selectOperator(){
+
+function selectOperator() {
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
-            if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo']=='' && allValues['numberOne']!='')  {
+            if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
                 allValues['operator'] = opBtn.textContent;
                 updateDisplay();
             }
-            else if(expressionArray.includes(opBtn.textContent) && allValues['numberTwo']!='' && allValues['numberOne']!=''){
+            else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
                 calculate();
                 allValues['operator'] = opBtn.textContent;
                 updateDisplay();
             }
-            else if(opBtn.textContent == 'Clear'){
+            else if (opBtn.textContent == 'Clear') {
                 clearFormula();
-            }else if(opBtn.textContent == '='){
+            } else if (opBtn.textContent == '=') {
                 calculate();
             }
         })
     });
 }
-function calculate(){
-    let answer = 0;
-    if(allValues['numberTwo'] == '' && allValues['numberOne'] != ''){
-        answer = parseFloat(allValues['numberOne']);
-    }else if(allValues['numbeTwo'] != ''){
-        answer = operate(allValues.operator,allValues.numberOne,allValues.numberTwo).toFixed(3);
+function calculate() {
+    let answer = '0';
+    if (allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
+        answer = allValues['numberOne'];
+    } else if (allValues['numberTwo'] != '') {
+        if (allValues['operator'] == '/' && allValues['numberOne'] == '0') {
+            answer = 0;
+        }
+        else {
+            answer = operate(allValues.operator, allValues.numberOne, allValues.numberTwo).toFixed(3);
+        }
     }
     clearFormula();
     allValues['numberOne'] += answer;
@@ -103,9 +108,9 @@ function calculate(){
 function clearFormula() {
     updateDisplay('Clear');
     allValues = {
-        numberOne : '',
-        operator : '',
-        numberTwo : ''
+        numberOne: '',
+        operator: '',
+        numberTwo: ''
     };
 }
 selectNumber();
