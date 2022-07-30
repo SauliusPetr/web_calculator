@@ -1,19 +1,23 @@
-//add
+const expressionArray = ['-', '+', '*', '/'];
+const isNum = /[0-9]/g;
+let displayValue = {
+    numberOne : '',
+    operator : '',
+    numberTwo : ''
+};
+
 function add(var_one, var_two) {
     return var_one + var_two;
 }
 
-//subtract
 function subtract(var_one, var_two) {
     return var_one - var_two;
 }
 
-//multiply
 function multiply(var_one, var_two) {
     return var_one * var_two;
 }
 
-//divide
 function divide(var_one, var_two) {
     return var_one / var_two;
 }
@@ -21,80 +25,97 @@ function divide(var_one, var_two) {
 function operate(operator, var_one, var_two) {
     switch (operator) {
         case '+':
-            return add(var_one, var_two);
+            return add(parseFloat(var_one), parseFloat(var_two));
         case '-':
-            return subtract(var_one, var_two);
+            return subtract(parseFloat(var_one), parseFloat(var_two));
         case '*':
-            return multiply(var_one, var_two);
+            return multiply(parseFloat(var_one), parseFloat(var_two));
         case '/':
-            return divide(var_one, var_two);
+            return divide(parseFloat(var_one), parseFloat(var_two));
         default:
-            return "OOPS, something went wrong!";
+            return "OOPS, something went wrong! ";
             break;
     }
 }
 
-let formula = '';
-function getFormula(){
-    return formula;
-}
-function addToFormula(elem){
-    formula +=elem;
-    updateDisplay();
-}
-function setFormula(elem){
-    formula = elem;
-}
-
-function updateDisplay(elem){
-    if(elem == 'Clear') display.textContent = '';
-    display.textContent = getFormula();
-}
-
 let display = document.querySelector('.display');
+function updateDisplay(elem) {
+    if (elem == 'Clear') {
+        display.textContent = '';
+    }
+    else {
+        display.textContent += elem;
+    }
+}
 
-function clickedNumber() {
+function selectNumber(){
     let numberButtons = document.querySelectorAll('.number');
     numberButtons.forEach(numBtn => {
         numBtn.addEventListener('click', () => {
-           addToFormula(numBtn.textContent); 
-        });
+            if(numBtn.textContent.match(isNum)){
+                if(displayValue.operator == ''){
+                    if(displayValue['numberOne']==''){
+                        updateDisplay('Clear');
+                    }
+                    displayValue['numberOne'] += numBtn.textContent;
+                }else{
+                    displayValue['numberTwo'] += numBtn.textContent;
+                }
+                updateDisplay(numBtn.textContent);
+            }
+        })
     });
 }
-
-function clickedOperator() {
-    let operatorCount = 0;
+  
+function selectOperator(){
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
-            if(!getFormula(getFormula().length-1).includes('-','+','*','/') && opBtn.textContent != '=' && opBtn.textContent != 'Clear'){
-                operatorCount=1;
-                addToFormula(opBtn.textContent);
+            if (expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']=='' && displayValue['numberOne']!='')  {
+                displayValue['operator'] = opBtn.textContent;
+                updateDisplay(opBtn.textContent);
+            }else if (expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']=='' && displayValue['numberOne']!='')  {
+                displayValue['operator'] = opBtn.textContent;
+                updateDisplay(opBtn.textContent);
             }
-            if(getFormula().length == 0  && opBtn.textContent != '=' && opBtn.textContent != 'Clear' ){
-                operatorCount=2;
-                addToFormula(opBtn);
+            else if(expressionArray.includes(opBtn.textContent) && displayValue['numberTwo']!='' && displayValue['numberOne']!=''){
+                calculate();
+                displayValue['operator'] = opBtn.textContent;
+                updateDisplay(opBtn.textContent);
             }
-            if(getFormula(getFormula().length-1).includes('-','+','*','/')  && opBtn.textContent != '=' && opBtn.textContent != 'Clear' ){
-                operatorCount+=1;
-                addToFormula(` ${opBtn.textContent}`);
-            }
-            if(opBtn.textContent = 'Clear'){
+            else if(opBtn.textContent == 'Clear'){
                 clearFormula();
-            }
-            if(opBtn.textContent = '='){
+            }else if(opBtn.textContent == '='){
                 calculate();
             }
-        });
+        })
     });
 }
-
-function clearFormula(){
-    updateDisplay('Clear');
-    setFormula('');
+function updateOperator(newOper){
+    display.textContent[display.textContent.length-1] ='';
+    display.textContent+=newOper;
 }
-
 function calculate(){
-    let formulaString = getFormula();
-
+    let answer = 0;
+    if(displayValue['numbeTwo'] == '' && displayValue['numberOne'] != ''){
+        answer = displayValue['numberOne'];
+    }else if(displayValue['numbeTwo'] != ''){
+        answer = operate(displayValue.operator,displayValue.numberOne,displayValue.numberTwo);
+    }else{
+        updateDisplay('Enter number...');
+    }
+    clearFormula();
+    displayValue['numberOne'] +=answer;
+    updateDisplay(answer);
 }
+
+function clearFormula() {
+    updateDisplay('Clear');
+    displayValue = {
+        numberOne : '',
+        operator : '',
+        numberTwo : ''
+    };
+}
+selectNumber();
+selectOperator();
