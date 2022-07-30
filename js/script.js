@@ -90,13 +90,13 @@ function selectOperator(){
 }
 function calculate(){
     let answer = 0;
-    if(allValues['numbeTwo'] == '' && allValues['numberOne'] != ''){
-        answer = allValues['numberOne'];
+    if(allValues['numberTwo'] == '' && allValues['numberOne'] != ''){
+        answer = parseFloat(allValues['numberOne']);
     }else if(allValues['numbeTwo'] != ''){
-        answer = operate(allValues.operator,allValues.numberOne,allValues.numberTwo);
+        answer = operate(allValues.operator,allValues.numberOne,allValues.numberTwo).toFixed(3);
     }
     clearFormula();
-    allValues['numberOne'] += answer.toFixed(3);
+    allValues['numberOne'] += answer;
     updateDisplay();
 }
 
