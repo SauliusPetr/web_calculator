@@ -107,28 +107,43 @@ function undoNumber() {
     
 }
 
+function updateOperators(opBtn){
+    if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
+        allValues['operator'] = opBtn.textContent;
+        updateDisplay();
+    }
+    else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
+        calculate();
+        allValues['operator'] = opBtn.textContent;
+        updateDisplay();
+    }
+    else if (opBtn.textContent == 'Clear') {
+        clearFormula();
+    } else if (opBtn.textContent == '=') {
+        calculate();
+    }
+}
 
 function selectOperator() {
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
-            if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
-                allValues['operator'] = opBtn.textContent;
-                updateDisplay();
-            }
-            else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
-                calculate();
-                allValues['operator'] = opBtn.textContent;
-                updateDisplay();
-            }
-            else if (opBtn.textContent == 'Clear') {
-                clearFormula();
-            } else if (opBtn.textContent == '=') {
-                calculate();
-            }
+            updateOperators(opBtn);
         })
     });
 }
+
+function pressOperator(){
+    let operatorButtons = document.querySelectorAll('.operator');
+    document.addEventListener('keydown',(pressedKey)=>{
+        operatorButtons.forEach((opBtn)=>{
+            if(opBtn.dataset.key == pressedKey.keyCode){
+                updateOperators(opBtn);
+            } 
+        })
+    });
+}
+
 function calculate() {
     let answer = '0';
     if (allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
@@ -158,3 +173,4 @@ clickNumber();
 selectOperator();
 pressNumber();
 undoNumber();
+pressOperator();
