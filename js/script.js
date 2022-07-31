@@ -94,6 +94,16 @@ function undoNumber() {
             updateDisplay();
         }
     });
+    let backBtn = document.querySelector('.operator.backspace');
+    backBtn.addEventListener('click',()=>{
+        if (allValues['operator'] == '') {
+            allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
+            updateDisplay();
+        } else if (allValues['operator'] != '') {
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
+            updateDisplay();
+        }
+    });
 }
 
 
