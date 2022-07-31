@@ -79,7 +79,8 @@ function pressNumber() {
     let numberButtons = document.querySelectorAll('.numbers > button');
     document.addEventListener('keydown', (pressedKey) => {
         numberButtons.forEach((numBtn) => {
-            if (numBtn.dataset.key == pressedKey.keyCode) {
+            let codeArr = numBtn.dataset.key.split(" ");
+            if (codeArr.includes(`${pressedKey.keyCode}`)) {
                 updateValues(numBtn);
             }
         });
