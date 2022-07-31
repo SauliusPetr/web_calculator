@@ -142,12 +142,6 @@ function pressOperator(){
     });
 }
 
-//if no dot add to end
-//if there is a dot then check if last number, if yes remove
-function updateDot(){
-    
-}
-
 function addDot(){
     let dot = '.';
     let operatorButtons = document.querySelectorAll('.operator.dot');
