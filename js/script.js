@@ -39,21 +39,19 @@ function operate(operator, var_one, var_two) {
     }
 }
 
-
-
 function updateDisplay(elem) {
     let display = document.querySelector('.display');
     if (elem == 'Clear' || allValues['numberOne'] == '') {
         display.textContent = '0';
     }
     else {
-        display.textContent = `${allValues.numberOne}${allValues.operator}${allValues.numberTwo}`;
+        display.textContent = `${allValues['numberOne']}${allValues['operator']}${allValues['numberTwo']}`;
     }
 }
 
 function updateValues(numBtn) {
     if (numBtn.textContent.match(isNum)) {
-        if (allValues.operator == '') {
+        if (allValues['operator'] == '') {
             if (allValues['numberOne'] == '' || allValues['numberOne'] == '0') {
                 updateDisplay('Clear');
                 clearFormula();
@@ -90,18 +88,18 @@ function pressNumber() {
 function undoNumber() {
     document.addEventListener('keydown', (pressedKey) => {
         if (pressedKey.keyCode == 8 && allValues['operator'] == '') {
-            allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
+            allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
         } else if (pressedKey.keyCode == 8 && allValues['operator'] != '') {
-            allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
         }
         updateDisplay(); 
     });
     let backBtn = document.querySelector('.operator.backspace');
     backBtn.addEventListener('click',()=>{
         if (allValues['operator'] == '') {
-            allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
+            allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
         } else if (allValues['operator'] != '') {
-            allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
         }
         updateDisplay();  
     });  
@@ -111,18 +109,17 @@ function undoNumber() {
 function updateOperators(opBtn){
     if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
         allValues['operator'] = opBtn.textContent;
-        updateDisplay();
     }
     else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
         calculate();
         allValues['operator'] = opBtn.textContent;
-        updateDisplay();
     }
     else if (opBtn.textContent == 'Clear') {
         clearFormula();
     } else if (opBtn.textContent == '=') {
         calculate();
     }
+    updateDisplay();
 }
 
 function selectOperator() {
@@ -145,6 +142,35 @@ function pressOperator(){
     });
 }
 
+//if no dot add to end
+//if there is a dot then check if last number, if yes remove
+function updateDot(){
+    
+}
+
+function addDot(){
+    let dot = '.';
+    let operatorButtons = document.querySelectorAll('.operator.dot');
+    operatorButtons.forEach(opBtn => {
+        opBtn.addEventListener('click', () => {
+            if(allValues['operator'] == ''){
+                if(!allValues['numberOne'].includes(dot) && allValues['numberOne'].length >= 1){
+                    allValues['numberOne']+=dot;
+                }else if(allValues['numberOne'].slice(-1) == dot){
+                    allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
+                }
+            }else{
+                if(!allValues['numberTwo'].includes(dot) && allValues['numberTwo'].length >= 1){
+                    allValues['numberTwo']+=dot;
+                }else if(allValues['numberTwo'].slice(-1) == dot){
+                    allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
+                }
+            }
+            updateDisplay();
+        })
+    });
+}
+
 function calculate() {
     let answer = '0';
     if (allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
@@ -154,7 +180,7 @@ function calculate() {
             answer = 0;
         }
         else {
-            answer = operate(allValues.operator, allValues.numberOne, allValues.numberTwo).toFixed(3);
+            answer = operate(allValues['operator'], allValues['numberOne'], allValues['numberTwo']).toFixed(1);
         }
     }
     clearFormula();
@@ -170,8 +196,10 @@ function clearFormula() {
         numberTwo: ''
     };
 }
+
 clickNumber();
 selectOperator();
 pressNumber();
 undoNumber();
 pressOperator();
+addDot();
