@@ -39,9 +39,11 @@ function operate(operator, var_one, var_two) {
     }
 }
 
-let display = document.querySelector('.display');
+
+
 function updateDisplay(elem) {
-    if (elem == 'Clear') {
+    let display = document.querySelector('.display');
+    if (elem == 'Clear' || allValues['numberOne'] == '') {
         display.textContent = '0';
     }
     else {
@@ -88,22 +90,21 @@ function undoNumber() {
     document.addEventListener('keydown', (pressedKey) => {
         if (pressedKey.keyCode == 8 && allValues['operator'] == '') {
             allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
-            updateDisplay();
         } else if (pressedKey.keyCode == 8 && allValues['operator'] != '') {
             allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
-            updateDisplay();
         }
+        updateDisplay(); 
     });
     let backBtn = document.querySelector('.operator.backspace');
     backBtn.addEventListener('click',()=>{
         if (allValues['operator'] == '') {
             allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
-            updateDisplay();
         } else if (allValues['operator'] != '') {
             allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
-            updateDisplay();
         }
-    });
+        updateDisplay();  
+    });  
+    
 }
 
 
