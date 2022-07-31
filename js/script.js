@@ -70,75 +70,79 @@ function clickNumber() {
         numBtn.addEventListener('click', () => {
             updateValues(numBtn);
         });
-    });    
+    });
 }
 
-function pressNumber(){
+function pressNumber() {
     let numberButtons = document.querySelectorAll('.numbers > button');
-    document.addEventListener('keydown',(pressedKey)=>{
-        numberButtons.forEach((numBtn)=>{
-            if(numBtn.dataset.key == pressedKey.keyCode){
+    document.addEventListener('keydown', (pressedKey) => {
+        numberButtons.forEach((numBtn) => {
+            if (numBtn.dataset.key == pressedKey.keyCode) {
                 updateValues(numBtn);
             }
         });
     });
 }
 
-function undoNumber(){
-    document.addEventListener('keydown',(pressedKey)=>{
-        if(pressedKey.keyCode == 8 ){
-            allValues['numberOne'] = allValues['numberOne'].slice(0,allValues['numberOne'].length-1);
+function undoNumber() {
+    document.addEventListener('keydown', (pressedKey) => {
+        if (pressedKey.keyCode == 8 && allValues['operator'] == '') {
+            allValues['numberOne'] = allValues['numberOne'].slice(0, allValues['numberOne'].length - 1);
+            updateDisplay();
+        } else if (pressedKey.keyCode == 8 && allValues['operator'] != '') {
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0, allValues['numberTwo'].length - 1);
             updateDisplay();
         }
     });
 }
 
+
 function selectOperator() {
-            let operatorButtons = document.querySelectorAll('.operator');
-            operatorButtons.forEach(opBtn => {
-                opBtn.addEventListener('click', () => {
-                    if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
-                        allValues['operator'] = opBtn.textContent;
-                        updateDisplay();
-                    }
-                    else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
-                        calculate();
-                        allValues['operator'] = opBtn.textContent;
-                        updateDisplay();
-                    }
-                    else if (opBtn.textContent == 'Clear') {
-                        clearFormula();
-                    } else if (opBtn.textContent == '=') {
-                        calculate();
-                    }
-                })
-            });
-        }
-function calculate() {
-            let answer = '0';
-            if (allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
-                answer = allValues['numberOne'];
-            } else if (allValues['numberTwo'] != '') {
-                if (allValues['operator'] == '/' && allValues['numberOne'] == '0') {
-                    answer = 0;
-                }
-                else {
-                    answer = operate(allValues.operator, allValues.numberOne, allValues.numberTwo).toFixed(3);
-                }
+    let operatorButtons = document.querySelectorAll('.operator');
+    operatorButtons.forEach(opBtn => {
+        opBtn.addEventListener('click', () => {
+            if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
+                allValues['operator'] = opBtn.textContent;
+                updateDisplay();
             }
-            clearFormula();
-            allValues['numberOne'] += answer;
-            updateDisplay();
+            else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
+                calculate();
+                allValues['operator'] = opBtn.textContent;
+                updateDisplay();
+            }
+            else if (opBtn.textContent == 'Clear') {
+                clearFormula();
+            } else if (opBtn.textContent == '=') {
+                calculate();
+            }
+        })
+    });
+}
+function calculate() {
+    let answer = '0';
+    if (allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
+        answer = allValues['numberOne'];
+    } else if (allValues['numberTwo'] != '') {
+        if (allValues['operator'] == '/' && allValues['numberOne'] == '0') {
+            answer = 0;
         }
+        else {
+            answer = operate(allValues.operator, allValues.numberOne, allValues.numberTwo).toFixed(3);
+        }
+    }
+    clearFormula();
+    allValues['numberOne'] += answer;
+    updateDisplay();
+}
 
 function clearFormula() {
-            updateDisplay('Clear');
-            allValues = {
-                numberOne: '',
-                operator: '',
-                numberTwo: ''
-            };
-        }
+    updateDisplay('Clear');
+    allValues = {
+        numberOne: '',
+        operator: '',
+        numberTwo: ''
+    };
+}
 clickNumber();
 selectOperator();
 pressNumber();
