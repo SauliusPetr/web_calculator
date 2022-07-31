@@ -45,7 +45,8 @@ function updateDisplay(elem) {
         display.textContent = '0';
     }
     else {
-        display.textContent = `${allValues['numberOne']}${allValues['operator']}${allValues['numberTwo']}`;
+        display.textContent = `${allValues['numberOne']}
+        ${allValues['operator']}${allValues['numberTwo']}`;
     }
 }
 
@@ -88,29 +89,31 @@ function pressNumber() {
 function undoNumber() {
     document.addEventListener('keydown', (pressedKey) => {
         if (pressedKey.keyCode == 8 && allValues['operator'] == '') {
-            allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
+            allValues['numberOne'] = allValues['numberOne'].slice(0, -1);
         } else if (pressedKey.keyCode == 8 && allValues['operator'] != '') {
-            allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0, -1);
         }
-        updateDisplay(); 
+        updateDisplay();
     });
     let backBtn = document.querySelector('.operator.backspace');
-    backBtn.addEventListener('click',()=>{
+    backBtn.addEventListener('click', () => {
         if (allValues['operator'] == '') {
-            allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
+            allValues['numberOne'] = allValues['numberOne'].slice(0, -1);
         } else if (allValues['operator'] != '') {
-            allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0, -1);
         }
-        updateDisplay();  
-    });  
-    
+        updateDisplay();
+    });
+
 }
 
-function updateOperators(opBtn){
-    if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
+function updateOperators(opBtn) {
+    if (expressionArray.includes(opBtn.textContent) &&
+        allValues['numberTwo'] == '' && allValues['numberOne'] != '') {
         allValues['operator'] = opBtn.textContent;
     }
-    else if (expressionArray.includes(opBtn.textContent) && allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
+    else if (expressionArray.includes(opBtn.textContent) &&
+        allValues['numberTwo'] != '' && allValues['numberOne'] != '') {
         calculate();
         allValues['operator'] = opBtn.textContent;
     }
@@ -122,7 +125,7 @@ function updateOperators(opBtn){
     updateDisplay();
 }
 
-function selectOperator() {
+function clickOperator() {
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
@@ -131,33 +134,35 @@ function selectOperator() {
     });
 }
 
-function pressOperator(){
+function pressOperator() {
     let operatorButtons = document.querySelectorAll('.operator');
-    document.addEventListener('keydown',(pressedKey)=>{
-        operatorButtons.forEach((opBtn)=>{
-            if(opBtn.dataset.key == pressedKey.keyCode){
+    document.addEventListener('keydown', (pressedKey) => {
+        operatorButtons.forEach((opBtn) => {
+            if (opBtn.dataset.key == pressedKey.keyCode) {
                 updateOperators(opBtn);
-            } 
+            }
         })
     });
 }
 
-function addDot(){
+function addDot() {
     let dot = '.';
     let operatorButtons = document.querySelectorAll('.operator.dot');
     operatorButtons.forEach(opBtn => {
         opBtn.addEventListener('click', () => {
-            if(allValues['operator'] == ''){
-                if(!allValues['numberOne'].includes(dot) && allValues['numberOne'].length >= 1){
-                    allValues['numberOne']+=dot;
-                }else if(allValues['numberOne'].slice(-1) == dot){
-                    allValues['numberOne'] = allValues['numberOne'].slice(0,-1);
+            if (allValues['operator'] == '') {
+                if (!allValues['numberOne'].includes(dot) &&
+                    allValues['numberOne'].length >= 1) {
+                    allValues['numberOne'] += dot;
+                } else if (allValues['numberOne'].slice(-1) == dot) {
+                    allValues['numberOne'] = allValues['numberOne'].slice(0, -1);
                 }
-            }else{
-                if(!allValues['numberTwo'].includes(dot) && allValues['numberTwo'].length >= 1){
-                    allValues['numberTwo']+=dot;
-                }else if(allValues['numberTwo'].slice(-1) == dot){
-                    allValues['numberTwo'] = allValues['numberTwo'].slice(0,-1);
+            } else {
+                if (!allValues['numberTwo'].includes(dot) &&
+                    allValues['numberTwo'].length >= 1) {
+                    allValues['numberTwo'] += dot;
+                } else if (allValues['numberTwo'].slice(-1) == dot) {
+                    allValues['numberTwo'] = allValues['numberTwo'].slice(0, -1);
                 }
             }
             updateDisplay();
@@ -174,7 +179,9 @@ function calculate() {
             answer = 0;
         }
         else {
-            answer = operate(allValues['operator'], allValues['numberOne'], allValues['numberTwo']).toFixed(1);
+            answer = operate(allValues['operator'],
+                allValues['numberOne'],
+                allValues['numberTwo']).toFixed(1);
         }
     }
     clearFormula();
@@ -192,7 +199,7 @@ function clearFormula() {
 }
 
 clickNumber();
-selectOperator();
+clickOperator();
 pressNumber();
 undoNumber();
 pressOperator();
