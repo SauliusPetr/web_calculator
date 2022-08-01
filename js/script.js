@@ -46,11 +46,12 @@ function updateDisplay(elem) {
     }
     else {
         display.textContent = `${allValues['numberOne']}
-        ${allValues['operator']}${allValues['numberTwo']}`;
+        ${allValues['operator']}
+        ${allValues['numberTwo']}`;
     }
 }
 
-function updateValues(numBtn) {
+function updateNumber(numBtn) {
     if (numBtn.textContent.match(isNum)) {
         if (allValues['operator'] == '') {
             if (allValues['numberOne'] == '' || allValues['numberOne'] == '0') {
@@ -66,21 +67,21 @@ function updateValues(numBtn) {
 }
 
 function clickNumber() {
-    let numberButtons = document.querySelectorAll('.numbers > button');
+    let numberButtons = document.querySelectorAll('.number');
     numberButtons.forEach(numBtn => {
-        numBtn.addEventListener('click', () => {
-            updateValues(numBtn);
+        numBtn.addEventListener('mousedown', () => {
+            updateNumber(numBtn);
         });
     });
 }
 
 function pressNumber() {
-    let numberButtons = document.querySelectorAll('.numbers > button');
+    let numberButtons = document.querySelectorAll('.number');
     document.addEventListener('keydown', (pressedKey) => {
         numberButtons.forEach((numBtn) => {
             let codeArr = numBtn.dataset.key.split(" ");
             if (codeArr.includes(`${pressedKey.keyCode}`)) {
-                updateValues(numBtn);
+                updateNumber(numBtn);
             }
         });
     });
@@ -128,7 +129,7 @@ function updateOperators(opBtn) {
 function clickOperator() {
     let operatorButtons = document.querySelectorAll('.operator');
     operatorButtons.forEach(opBtn => {
-        opBtn.addEventListener('click', () => {
+        opBtn.addEventListener('mousedown', () => {
             updateOperators(opBtn);
         })
     });
@@ -145,28 +146,39 @@ function pressOperator() {
     });
 }
 
-function addDot() {
+function updateDot() {
     let dot = '.';
-    let operatorButtons = document.querySelectorAll('.operator.dot');
-    operatorButtons.forEach(opBtn => {
-        opBtn.addEventListener('click', () => {
-            if (allValues['operator'] == '') {
-                if (!allValues['numberOne'].includes(dot) &&
-                    allValues['numberOne'].length >= 1) {
-                    allValues['numberOne'] += dot;
-                } else if (allValues['numberOne'].slice(-1) == dot) {
-                    allValues['numberOne'] = allValues['numberOne'].slice(0, -1);
-                }
-            } else {
-                if (!allValues['numberTwo'].includes(dot) &&
-                    allValues['numberTwo'].length >= 1) {
-                    allValues['numberTwo'] += dot;
-                } else if (allValues['numberTwo'].slice(-1) == dot) {
-                    allValues['numberTwo'] = allValues['numberTwo'].slice(0, -1);
-                }
-            }
-            updateDisplay();
-        })
+    if (allValues['operator'] == '') {
+        if (!allValues['numberOne'].includes(dot) &&
+            allValues['numberOne'].length >= 1) {
+            allValues['numberOne'] += dot;
+        } else if (allValues['numberOne'].slice(-1) == dot) {
+            allValues['numberOne'] = allValues['numberOne'].slice(0, -1);
+        }
+    } else {
+        if (!allValues['numberTwo'].includes(dot) &&
+            allValues['numberTwo'].length >= 1) {
+            allValues['numberTwo'] += dot;
+        } else if (allValues['numberTwo'].slice(-1) == dot) {
+            allValues['numberTwo'] = allValues['numberTwo'].slice(0, -1);
+        }
+    }
+    updateDisplay();
+}
+
+function clickDot() {
+    let operatorButtons = document.querySelector('.operator.dot');
+    operatorButtons.addEventListener('mousedown', () => {
+        updateDot();
+    });
+}
+
+function pressDot() {
+    let operatorButtons = document.querySelector('.operator.dot');
+    document.addEventListener('keydown', (pressedKey) => {
+        if (operatorButtons.dataset.key == pressedKey.keyCode) {
+            updateDot();
+        }
     });
 }
 
@@ -198,9 +210,35 @@ function clearFormula() {
     };
 }
 
+function addBtnStyle() {
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach((btn) => {
+        btn.addEventListener('mousedown', () => {
+            btn.classList.add('clicked');
+        });
+        document.addEventListener('mouseup', () => {
+            btn.classList.remove('clicked');
+        });
+
+        let codeArr = btn.dataset.key.split(" ");
+        document.addEventListener('keyup', (pressedKey) => {
+            if (codeArr.includes(`${pressedKey.keyCode}`)) {
+                btn.classList.remove('clicked');
+            }
+        });
+        document.addEventListener('keydown', (pressedKey) => {
+            if (codeArr.includes(`${pressedKey.keyCode}`)) {
+                btn.classList.add('clicked');
+            }
+        });
+    });
+}
+
 clickNumber();
-clickOperator();
 pressNumber();
-undoNumber();
+clickOperator();
 pressOperator();
-addDot();
+undoNumber();
+pressDot();
+clickDot();
+addBtnStyle();
